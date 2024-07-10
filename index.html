@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode {
+            background-color: #222;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #eee;
+        }
+
+        .info-block {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            animation: fade-in 0.5s ease-out;
+            position: relative;
+        }
+
+        .info-value {
+            margin-left: 10px;
+            font-weight: bold;
+            transition: filter 0.3s ease;
+        }
+
+        .reveal-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #666;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .reveal-button:hover {
+            background-color: #555;
+        }
+
+        .revealed .info-value {
+            filter: none;
+        }
+
+        .os-icon {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <h1>User Information</h1>
+    <div class="info-block" id="language">
+        <strong>Language Settings:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('language')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="resolution">
+        <strong>Screen Resolution:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('resolution')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="browser">
+        <strong>Browser and Version:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('browser')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="os">
+        <strong>Operating System:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('os')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="geolocation">
+        <strong>Geographical Position:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('geolocation')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="network-type">
+        <strong>Network Type:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('network-type')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="isp">
+        <strong>ISP:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('isp')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="ipv4">
+        <strong>IPv4 Address:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('ipv4')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+    <div class="info-block" id="ipv6">
+        <strong>IPv6 Address:</strong>
+        <span class="info-value">********</span>
+        <button class="reveal-button" onclick="revealInfo('ipv6')">Reveal</button>
+        <img src="" alt="" class="os-icon">
+    </div>
+
+    <script>
+        function revealInfo(id) {
+            var infoBlock = document.getElementById(id);
+            var infoValue = infoBlock.querySelector('.info-value');
+            var button = infoBlock.querySelector('.reveal-button');
+
+            switch (id) {
+                case 'language':
+                    infoValue.innerText = navigator.language || 'N/A';
+                    break;
+                case 'resolution':
+                    var resolution = `${window.screen.width}x${window.screen.height}`;
+                    infoValue.innerText = resolution;
+                    break;
+                case 'browser':
+                    var browserInfo = `${navigator.appName} ${navigator.appVersion}`;
+                    infoValue.innerText = browserInfo;
+                    break;
+                case 'os':
+                    var osInfo = `${navigator.platform}`;
+                    infoValue.innerText = osInfo;
+                    var osIcon = getOsIcon(osInfo);
+                    infoBlock.querySelector('.os-icon').src = osIcon;
+                    break;
+                case 'geolocation':
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            var latitude = position.coords.latitude;
+                            var longitude = position.coords.longitude;
+                            infoValue.innerText = `${latitude}, ${longitude}`;
+                        }, function(error) {
+                            infoValue.innerText = 'N/A';
+                        });
+                    } else {
+                        infoValue.innerText = 'Geolocation not supported';
+                    }
+                    break;
+                case 'network-type':
+                    infoValue.innerText = 'Wi-Fi'; // Sample value
+                    break;
+                case 'isp':
+                    infoValue.innerText = 'Sample ISP'; // Sample value
+                    break;
+                case 'ipv4':
+                    fetch('https://ipinfo.io/json')
+                        .then(response => response.json())
+                        .then(data => {
+                            infoValue.innerText = data.ip || 'N/A';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching IP address:', error);
+                            infoValue.innerText = 'N/A';
+                        });
+                    break;
+                case 'ipv6':
+                    infoValue.innerText = 'N/A'; // Placeholder
+                    break;
+                default:
+                    break;
+            }
+
+            infoValue.classList.add('revealed');
+            button.style.display = 'none';
+        }
+
+        function getOsIcon(osInfo) {
+            var osIcon = 'unknown.jpg';
+
+            if (osInfo.toLowerCase().includes('windows 10')) {
+                osIcon = '10.jpg';
+            } else if (osInfo.toLowerCase().includes('windows 11')) {
+                osIcon = '11.jpg';
+            } else if (osInfo.toLowerCase().includes('mac') || osInfo.toLowerCase().includes('darwin')) {
+                osIcon = 'm.jpg';
+            } else if (osInfo.toLowerCase().includes('ubuntu')) {
+                osIcon = 'lu.jpg';
+            } else if (osInfo.toLowerCase().includes('arch linux')) {
+                osIcon = 'al.jpg';
+            } else if (osInfo.toLowerCase().includes('android')) {
+                osIcon = 'a.jpg';
+            }
+
+            return osIcon;
+        }
+    </script>
+</body>
+</html>
